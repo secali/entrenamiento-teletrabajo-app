@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutinas de Ejercicio - Teletrabajo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: #4a5568;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #3182ce;
+        }
+
+        .btn-secondary {
+            background: #718096;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .btn-success {
+            background: #38a169;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+        }
+
+        .routine-card {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .routine-card h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .routine-card p {
+            color: #4a5568;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .exercise-item {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            background: #2d3748;
+            color: white;
+            font-size: 3rem;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .current-exercise {
+            background: #e6fffa;
+            border: 2px solid #38b2ac;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .current-exercise h3 {
+            color: #234e52;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4299e1, #38a169);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .tts-controls {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tts-controls h3 {
+            color: #22543d;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .range-group {
+            margin-bottom: 10px;
+        }
+
+        .range-group label {
+            margin-bottom: 5px;
+        }
+
+        .range-group input[type="range"] {
+            width: 100%;
+        }
+
+        .range-value {
+            text-align: center;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .tts-status {
+            background: #fed7d7;
+            border: 1px solid #fc8181;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #742a2a;
+            display: none;
+        }
+
+        .settings-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="settings-icon" onclick="showScreen('settings-screen')" title="Configuración">⚙️</button>
+            <h1>Rutinas de Ejercicio</h1>
+            <p>Mantente activo mientras teletrabajas</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Pantalla principal -->
+            <div id="home-screen" class="screen active">
+                <button class="btn" onclick="showScreen('create-screen')">➕ Nueva Rutina</button>
+                <div id="routines-list"></div>
+            </div>
+
+            <!-- Pantalla de configuración -->
+            <div id="settings-screen" class="screen">
+                <h2>⚙️ Configuración</h2>
+                
+                <div class="tts-controls">
+                    <h3>🔊 Configuración de Voz</h3>
+                    
+                    <div id="tts-not-supported" class="tts-status">
+                        ⚠️ Tu navegador no soporta síntesis de voz
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="tts-enabled" checked>
+                        <label for="tts-enabled">Activar texto a voz</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="read-exercise-name" checked>
+                        <label for="read-exercise-name">Leer nombre del ejercicio</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="read-exercise-description" checked>
+                        <label for="read-exercise-description">Leer descripción del ejercicio</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="voice-select">Voz:</label>
+                        <select id="voice-select"></select>
+                    </div>
+                    
+                    <div class="range-group">
+                        <label>Velocidad de voz:</label>
+                        <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="1">
+                        <div class="range-value" id="rate-value">1.0x</div>
+                    </div>
+                    
+                    <div class="range-group">
+                        <label>Volumen:</label>
+                        <input type="range" id="speech-volume" min="0" max="1" step="0.1" value="1">
+                        <div class="range-value" id="volume-value">100%</div>
+                    </div>
+                    
+                    <button class="btn" onclick="testTTS()">🔊 Probar Voz</button>
+                </div>
+                
+                <button class="btn-secondary" onclick="showScreen('home-screen')">← Volver</button>
+            </div>
+
+            <!-- Pantalla crear rutina -->
+            <div id="create-screen" class="screen">
+                <h2>Crear Nueva Rutina</h2>
+                <form id="routine-form">
+                    <div class="form-group">
+                        <label>Nombre de la rutina:</label>
+                        <input type="text" id="routine-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea id="routine-description"></textarea>
+                    </div>
+                    <div id="exercises-container">
+                        <h3>Ejercicios:</h3>
+                    </div>
+                    <button type="button" class="btn-secondary btn" onclick="addExercise()">➕ Añadir Ejercicio</button>
+                    <div class="nav-buttons">
+                        <button type="button" class="btn-secondary" onclick="showScreen('home-screen')">Cancelar</button>
+                        <button type="submit" class="btn-success">Guardar Rutina</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Pantalla ejecutar rutina -->
+            <div id="workout-screen" class="screen">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="timer-display" id="timer-display">00:00</div>
+                <div class="current-exercise" id="current-exercise">
+                    <h3>Preparándose...</h3>
+                    <p>La rutina comenzará en breve</p>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-secondary" id="pause-btn" onclick="togglePause()">⏸️ Pausar</button>
+                    <button class="btn-danger" onclick="stopWorkout()">⏹️ Detener</button>
+                    <button class="btn" id="next-btn" onclick="nextExercise()">⏭️ Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let routines = JSON.parse(localStorage.getItem('workoutRoutines')) || [];
+        let currentRoutine = null;
+        let currentExerciseIndex = 0;
+        let timeLeft = 0;
+        let isRunning = false;
+        let isPaused = false;
+        let timerInterval = null;
+
+        // Variables TTS
+        let speechSynthesis = window.speechSynthesis;
+        let availableVoices = [];
+        let ttsSettings = JSON.parse(localStorage.getItem('ttsSettings')) || {
+            enabled: true,
+            readName: true,
+            readDescription: true,
+            voiceIndex: 0,
+            rate: 1,
+            volume: 1
+        };
+
+        // Rutina predefinida
+        const defaultRoutine = {
+            id: 'default-mobility',
+            name: 'Movilidad + Estiramiento (15 min)',
+            description: 'Rutina completa para combatir el sedentarismo del teletrabajo',
+            exercises: [
+                { name: 'Cuello + ojos', duration: 60, description: '5 giros lentos de cuello + 5 inclinaciones. Mirada lejos-cerca + 10 parpadeos conscientes' },
+                { name: 'Hombros + muñecas', duration: 40, description: '10 círculos de hombros. 10 flexo-extensiones muñeca + círculos por mano' },
+                { name: 'Columna - gato-perro', duration: 40, description: '10 repeticiones lentas (moviendo cada segmento con control)' },
+                { name: 'Caderas + tobillos/tibiales', duration: 40, description: 'Círculos de cadera. Círculos de tobillo + flexo-extensiones tibiales' },
+                { name: 'TRX Pectoral stretch → Row', duration: 60, description: '30s estiramiento pecho + 30s remo con TRX (10 repeticiones)' },
+                { name: 'Sentadilla profunda asistida', duration: 60, description: '10 sentadillas profundas con TRX + reach de brazos hacia arriba' },
+                { name: 'Isquiotibiales dinámicos', duration: 60, description: '10 RDL a una pierna controlada (30s por pierna)' },
+                { name: 'TRX Hamstring curl / Puente', duration: 60, description: 'Con TRX: 10 curl de talones. Sin TRX: puente unilateral 10 rep/pierna' },
+                { name: 'Glúteo medio', duration: 60, description: 'Clamshell 12-15 rep/lado. Abducción lateral 12-15 rep/lado' },
+                { name: 'Aductores', duration: 60, description: 'Aducción pierna lateral 12-15 rep. Sentadilla sumo isométrica 20-30s' },
+                { name: 'Tibiales y gemelos', duration: 60, description: '30s caminata talones + 30s elevaciones talón dinámicas (25 rep)' },
+                { name: 'Cardio express', duration: 60, description: 'Jumping jacks / marchar rodillas altas / saltitos suaves' },
+                { name: 'TRX Plank', duration: 40, description: '40s plancha con pies en asas TRX' },
+                { name: 'TRX Side Plank', duration: 40, description: '20s cada lado con TRX' },
+                { name: 'Mini sentadillas', duration: 40, description: '15-20 repeticiones rápidas y controladas' },
+                { name: 'Finalización y respiración', duration: 60, description: 'Estiramiento gemelo 30s/pierna + 3 respiraciones profundas' }
+            ]
+        };
+
+        // Inicializar TTS
+        function initTTS() {
+            if (!speechSynthesis) {
+                document.getElementById('tts-not-supported').style.display = 'block';
+                return false;
+            }
+
+            // Cargar voces disponibles
+            function loadVoices() {
+                availableVoices = speechSynthesis.getVoices();
+                const voiceSelect = document.getElementById('voice-select');
+                voiceSelect.innerHTML = '';
+
+                // Filtrar voces en español primero
+                const spanishVoices = availableVoices.filter(voice => 
+                    voice.lang.startsWith('es') || voice.lang.includes('es')
+                );
+                
+                const voicesToShow = spanishVoices.length > 0 ? spanishVoices : availableVoices;
+
+                voicesToShow.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    voiceSelect.appendChild(option);
+                });
+
+                // Seleccionar voz guardada
+                if (ttsSettings.voiceIndex < voicesToShow.length) {
+                    voiceSelect.value = ttsSettings.voiceIndex;
+                }
+            }
+
+            // Cargar voces al inicio y cuando cambien
+            loadVoices();
+            speechSynthesis.onvoiceschanged = loadVoices;
+
+            return true;
+        }
+
+        // Configurar controles TTS
+        function setupTTSControls() {
+            document.getElementById('tts-enabled').checked = ttsSettings.enabled;
+            document.getElementById('read-exercise-name').checked = ttsSettings.readName;
+            document.getElementById('read-exercise-description').checked = ttsSettings.readDescription;
+            document.getElementById('speech-rate').value = ttsSettings.rate;
+            document.getElementById('speech-volume').value = ttsSettings.volume;
+            
+            updateRangeValues();
+
+            // Event listeners
+            document.getElementById('tts-enabled').addEventListener('change', saveTTSSettings);
+            document.getElementById('read-exercise-name').addEventListener('change', saveTTSSettings);
+            document.getElementById('read-exercise-description').addEventListener('change', saveTTSSettings);
+            document.getElementById('voice-select').addEventListener('change', saveTTSSettings);
+            
+            document.getElementById('speech-rate').addEventListener('input', function() {
+                updateRangeValues();
+                saveTTSSettings();
+            });
+            
+            document.getElementById('speech-volume').addEventListener('input', function() {
+                updateRangeValues();
+                saveTTSSettings();
+            });
+        }
+
+        // Actualizar valores de los rangos
+        function updateRangeValues() {
+            const rate = document.getElementById('speech-rate').value;
+            const volume = document.getElementById('speech-volume').value;
+            
+            document.getElementById('rate-value').textContent = parseFloat(rate).toFixed(1) + 'x';
+            document.getElementById('volume-value').textContent = Math.round(volume * 100) + '%';
+        }
+
+        // Guardar configuración TTS
+        function saveTTSSettings() {
+            ttsSettings = {
+                enabled: document.getElementById('tts-enabled').checked,
+                readName: document.getElementById('read-exercise-name').checked,
+                readDescription: document.getElementById('read-exercise-description').checked,
+                voiceIndex: parseInt(document.getElementById('voice-select').value) || 0,
+                rate: parseFloat(document.getElementById('speech-rate').value),
+                volume: parseFloat(document.getElementById('speech-volume').value)
+            };
+            
+            localStorage.setItem('ttsSettings', JSON.stringify(ttsSettings));
+        }
+
+        // Función para hablar texto
+        function speak(text) {
+            if (!ttsSettings.enabled || !speechSynthesis || !text.trim()) {
+                return;
+            }
+
+            // Cancelar cualquier habla anterior
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Configurar voz
+            if (availableVoices.length > 0 && ttsSettings.voiceIndex < availableVoices.length) {
+                utterance.voice = availableVoices[ttsSettings.voiceIndex];
+            }
+            
+            utterance.rate = ttsSettings.rate;
+            utterance.volume = ttsSettings.volume;
+            utterance.lang = 'es-ES';
+
+            speechSynthesis.speak(utterance);
+        }
+
+        // Leer ejercicio actual
+        function speakCurrentExercise(exercise) {
+            if (!ttsSettings.enabled) return;
+
+            let textToSpeak = '';
+            
+            if (ttsSettings.readName) {
+                textToSpeak += exercise.name;
+            }
+            
+            if (ttsSettings.readDescription && exercise.description) {
+                if (textToSpeak) textToSpeak += '. ';
+                textToSpeak += exercise.description;
+            }
+            
+            if (textToSpeak) {
+                speak(textToSpeak);
+            }
+        }
+
+        // Probar TTS
+        function testTTS() {
+            speak('Prueba de texto a voz. Configuración funcionando correctamente.');
+        }
+
+        // Inicializar la aplicación
+        function init() {
+            if (routines.length === 0) {
+                routines.push(defaultRoutine);
+                saveRoutines();
+            }
+            
+            const ttsSupported = initTTS();
+            setupTTSControls();
+            loadRoutines();
+        }
+
+        // Guardar rutinas en localStorage
+        function saveRoutines() {
+            localStorage.setItem('workoutRoutines', JSON.stringify(routines));
+        }
+
+        // Cargar rutinas
+        function loadRoutines() {
+            const container = document.getElementById('routines-list');
+            container.innerHTML = '';
+
+            routines.forEach(routine => {
+                const totalTime = routine.exercises.reduce((sum, ex) => sum + ex.duration, 0);
+                const minutes = Math.floor(totalTime / 60);
+                const seconds = totalTime % 60;
+
+                const card = document.createElement('div');
+                card.className = 'routine-card';
+                card.innerHTML = `
+                    <h3>${routine.name}</h3>
+                    <p>${routine.description}</p>
+                    <p><strong>Duración:</strong> ${minutes}:${seconds.toString().padStart(2, '0')}</p>
+                    <p><strong>Ejercicios:</strong> ${routine.exercises.length}</p>
+                    <div class="nav-buttons">
+                        <button class="btn-success" onclick="startWorkout('${routine.id}')">▶️ Iniciar</button>
+                        ${routine.id !== 'default-mobility' ? `<button class="btn-danger" onclick="deleteRoutine('${routine.id}')">🗑️ Eliminar</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Mostrar pantalla
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Añadir ejercicio al formulario
+        function addExercise() {
+            const container = document.getElementById('exercises-container');
+            const exerciseDiv = document.createElement('div');
+            exerciseDiv.className = 'exercise-item';
+            exerciseDiv.innerHTML = `
+                <div class="form-group">
+                    <label>Nombre del ejercicio:</label>
+                    <input type="text" class="exercise-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Duración (segundos):</label>
+                    <input type="number" class="exercise-duration" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <textarea class="exercise-description"></textarea>
+                </div>
+                <button type="button" class="btn-danger" onclick="this.parentElement.remove()">Eliminar</button>
+            `;
+            container.appendChild(exerciseDiv);
+        }
+
+        // Manejar formulario de rutina
+        document.getElementById('routine-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('routine-name').value;
+            const description = document.getElementById('routine-description').value;
+            const exerciseItems = document.querySelectorAll('.exercise-item');
+            
+            const exercises = Array.from(exerciseItems).map(item => ({
+                name: item.querySelector('.exercise-name').value,
+                duration: parseInt(item.querySelector('.exercise-duration').value),
+                description: item.querySelector('.exercise-description').value
+            }));
+
+            if (exercises.length === 0) {
+                alert('Añade al menos un ejercicio');
+                return;
+            }
+
+            const routine = {
+                id: Date.now().toString(),
+                name,
+                description,
+                exercises
+            };
+
+            routines.push(routine);
+            saveRoutines();
+            loadRoutines();
+            
+            // Limpiar formulario
+            document.getElementById('routine-form').reset();
+            document.getElementById('exercises-container').innerHTML = '<h3>Ejercicios:</h3>';
+            
+            showScreen('home-screen');
+        });
+
+        // Eliminar rutina
+        function deleteRoutine(id) {
+            if (confirm('¿Seguro que quieres eliminar esta rutina?')) {
+                routines = routines.filter(r => r.id !== id);
+                saveRoutines();
+                loadRoutines();
+            }
+        }
+
+        // Iniciar entrenamiento
+        function startWorkout(routineId) {
+            currentRoutine = routines.find(r => r.id === routineId);
+            currentExerciseIndex = 0;
+            isRunning = true;
+            isPaused = false;
+            
+            showScreen('workout-screen');
+            startExercise();
+        }
+
+        // Iniciar ejercicio actual
+        function startExercise() {
+            if (currentExerciseIndex >= currentRoutine.exercises.length) {
+                finishWorkout();
+                return;
+            }
+
+            const exercise = currentRoutine.exercises[currentExerciseIndex];
+            timeLeft = exercise.duration;
+            
+            document.getElementById('current-exercise').innerHTML = `
+                <h3>${exercise.name}</h3>
+                <p>${exercise.description}</p>
+            `;
+
+            // Leer ejercicio con TTS
+            speakCurrentExercise(exercise);
+
+            updateProgress();
+            startTimer();
+        }
+
+        // Iniciar temporizador
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                if (!isPaused && isRunning) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        nextExercise();
+                    }
+                }
+            }, 1000);
+            
+            updateTimerDisplay();
+        }
+
+        // Actualizar display del temporizador
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const progress = (currentExerciseIndex / currentRoutine.exercises.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        // Pausar/reanudar
+        function togglePause() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('pause-btn');
+            btn.textContent = isPaused ? '▶️ Continuar' : '⏸️ Pausar';
+            
+            // Pausar también el TTS
+            if (isPaused) {
+                speechSynthesis.pause();
+            } else {
+                speechSynthesis.resume();
+            }
+        }
+
+        // Siguiente ejercicio
+        function nextExercise() {
+            currentExerciseIndex++;
+            updateProgress();
+            
+            if (currentExerciseIndex >= currentRoutine.exercises.length) {
+                finishWorkout();
+            } else {
+                startExercise();
+            }
+        }
+
+        // Detener entrenamiento
+        function stopWorkout() {
+            if (confirm('¿Seguro que quieres detener el entrenamiento?')) {
+                isRunning = false;
+                speechSynthesis.cancel(); // Detener TTS
+                if (timerInterval) clearInterval(timerInterval);
+                showScreen('home-screen');
+            }
+        }
+
+        // Finalizar entrenamiento
+        function finishWorkout() {
+            isRunning = false;
+            speechSynthesis.cancel(); // Detener TTS
+            if (timerInterval) clearInterval(timerInterval);
+            
+            speak('¡Entrenamiento completado! Buen trabajo.');
+            setTimeout(() => {
+                alert('¡Entrenamiento completado! 🎉');
+                showScreen('home-screen');
+            }, 2000);
+        }
+
+        // Inicializar cuando se carga la página
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
